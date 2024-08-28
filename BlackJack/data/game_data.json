@@ -1,0 +1,13 @@
+{
+    "settings": {
+        "chips": 100,
+        "bet": 10,
+        "max_players": 4
+    },
+    "players": {
+        "0": {"name": "Dealer", "chips": "\u221e", "bet": null, "hand": [], "count_value": []},
+        "1": {"name": "Player1", "chips": 100, "bet": 0, "hand": [], "count_value": []},
+        "2": {"name": "Player2", "chips": 100, "bet": 0, "hand": [], "count_value": []},
+        "3": {"name": "Player3", "chips": 100, "bet": 0, "hand": [], "count_value": []}
+    }
+}
