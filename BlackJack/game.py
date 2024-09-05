@@ -1,16 +1,16 @@
 from src.output import console_output, gui_output
 from src.utils.game_utils import clear_data
 
+# Yep, this is the whole code, only one line of code
 def main():
-    # play('console')
-    play('gui')
-
     # Start the game
+    play(input("Enter 'console' for console output or 'gui' for GUI output: "))
+    # End the game
+
     """
     play('console')
     play('gui')
     """
-    # End the game
 
     # Clear the data (optional)
     clear_data()
