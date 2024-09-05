@@ -42,7 +42,7 @@ This project is implementation of a Blackjack game using Python and Tkinter for 
 
 Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask ChatGpt for any help.
 
-### Windows
+#### Windows
 
 1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/). Ensure that you check the box to add Python to your PATH during installation.
 2. Install Pillow (download if you want to use qui version of the game):
@@ -50,7 +50,7 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
     pip install pillow
     ```
 
-### macOS
+#### macOS
 
 1. Install Homebrew (trust me you need it, you can't install Python without it):
     ```sh
@@ -65,7 +65,7 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
     pip3 install pillow
     ```
 
-### Linux
+#### Linux
 
 - If you are using a Linux, I think you already know what to do. You don't need my help.
 
