@@ -90,7 +90,7 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
 
 ### Run The Game
 
-3. Run the main script to start the game:
+1. Run the main script to start the game:
    - For Windows:
         ```sh
         python main.py
@@ -100,7 +100,7 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
         python3 main.py
         ```
 
-4. The program will ask `Enter 'console' for console output or 'gui' for GUI output:`
+2. The program will ask `Enter 'console' for console output or 'gui' for GUI output:`
    - Enter `console` to play the game in the console.
    - Enter `gui` to play the game with the graphical user interface (GUI).
 
