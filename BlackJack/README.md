@@ -73,7 +73,7 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
 
 ### Clone the Repository
 
-1. Clone the repository and navigate to the project folder:
+1. Clone the repository:
     ```sh
     git clone https://github.com/DanyilT/Python.git
     ```
