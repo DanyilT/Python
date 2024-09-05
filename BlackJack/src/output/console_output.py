@@ -179,6 +179,8 @@ class Console_Play:
             print("\nWinners:")
             self.winners()
 
+            main() if input("Would you like to play again? (Y/n): ").lower() in ['y', 'yes', ''] else None
+
         except Exception as e:
             print(f"Error during run: {e}")
 
@@ -290,7 +292,7 @@ class Console_Play:
                 else:
                     # Don't forget to comment next line
                     # print("Fuck you!\n You really can't spell right? Take your fucking keyboard and write STAND or HIT or DOUBLE or SPLIT!! Is it really so hard? I have to write two whole lines of code to tell you that you don't know how to write!")
-                    print(f"Invalid action, please choose 'hit', 'stand', 'double'{(", or 'split'" if can_split else "")}")
+                    print(f"Invalid action, please choose hit, stand{', double' if can_bet else ''}{', split' if can_split else ''}")
             return 'stand'
         except Exception as e:
             print(f"Error during action: {e}")
