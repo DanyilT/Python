@@ -73,6 +73,8 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
 
 ### Clone the Repository
 
+#### Using Git
+
 1. Clone the repository:
     ```sh
     git clone https://github.com/DanyilT/Python.git
@@ -87,6 +89,11 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
         ```sh
         cd Python/BlackJack
         ```
+
+#### Downloading the ZIP File
+
+1. Download the ZIP file from the [GitHub repository](https://github.com/DanyilT/Python.git) and extract it.
+2. Navigate to the project folder in the extracted directory (`Python/BlackJack`).
 
 ### Run The Game
 
