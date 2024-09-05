@@ -88,6 +88,8 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
         cd Python/BlackJack
         ```
 
+### Run The Game
+
 3. Run the main script to start the game:
    - For Windows:
         ```sh
