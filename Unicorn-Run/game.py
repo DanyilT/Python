@@ -1,3 +1,4 @@
+import os
 import json
 import random
 import pygame
@@ -73,12 +74,12 @@ class MainMenu:
         self.display.blit(title_text, title_text_pos)
 
         # Display play button
-        self.play_button = pygame.transform.scale(pygame.image.load('images/icons/Play.png'), (96, 96))
+        self.play_button = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('Play.png', 'images/icons')), (96, 96))
         self.play_button_rect = self.play_button.get_rect(center=(self.WIDTH//2, self.HEIGHT//2))
         self.display.blit(self.play_button, self.play_button_rect)
 
         # Display exit button
-        self.exit_button = pygame.transform.scale(pygame.image.load('images/icons/Exit.png'), (48, 48))
+        self.exit_button = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('Exit.png', 'images/icons')), (48, 48))
         self.exit_button_rect = self.exit_button.get_rect(topleft=(20, 20))
         self.display.blit(self.exit_button, self.exit_button_rect)
 
@@ -108,7 +109,7 @@ class MainMenu:
             score_text_pos = (self.WIDTH - score_text.get_width() - 20, 20 + i * 20)
             self.display.blit(score_text, score_text_pos)
             if player['score'] == self.sorted_scores[0]['score']:
-                star_icon = pygame.transform.scale(pygame.image.load('images/player.png'), (24, 24))
+                star_icon = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('player.png', 'images')), (24, 24))
                 self.display.blit(star_icon, (score_text_pos[0] - 30, score_text_pos[1] - 5))
 
 # Play the Game
@@ -124,7 +125,7 @@ class Game:
 
         self.sorted_scores = sorted(GameData().load_player_data()['players'].values(), key=lambda x: x['score'], reverse=True)[:5]
 
-        self.background = pygame.transform.scale(pygame.image.load('images/background.png'), (self.WIDTH, self.HEIGHT))
+        self.background = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('background.png', 'images')), (self.WIDTH, self.HEIGHT))
         self.background_1 = 0
         self.background_2 = self.background.get_width()
         self.background_move = 3
@@ -156,7 +157,7 @@ class Game:
                 if event.type == pygame.VIDEORESIZE:
                     self.WIDTH, self.HEIGHT = event.w, event.h
                     self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.RESIZABLE)
-                    self.background = pygame.transform.scale(pygame.image.load('images/background.png'), (self.WIDTH, self.HEIGHT))
+                    self.background = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('background.png', 'images')), (self.WIDTH, self.HEIGHT))
                     self.background_1 = 0
                     self.background_2 = self.background.get_width()
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -214,7 +215,7 @@ class Game:
     # Display user interface (labels, buttons, etc.)
     def ui(self):
         # Display pause button
-        self.pause_button = pygame.transform.scale(pygame.image.load('images/icons/Pause.png'), (48, 48))
+        self.pause_button = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('Pause.png', 'images/icons')), (48, 48))
         self.pause_button_rect = self.pause_button.get_rect(topright=(self.WIDTH - 20, 20))
         self.display.blit(self.pause_button, self.pause_button_rect)
 
@@ -246,21 +247,21 @@ class Game:
 
     # Spawn player
     def create_player(self):
-        player = pygame.transform.scale(pygame.image.load('images/player.png').convert_alpha(), (64, 64))
+        player = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('player.png', 'images')).convert_alpha(), (64, 64))
         player_rect = pygame.Rect(self.WIDTH/10, self.HEIGHT/2, 64, 64)
         player_move_vertical_and_horizontal = [[0, 10], [10, 0]]
         return player, player_rect, player_move_vertical_and_horizontal
 
     # Create enemy
     def create_enemy(self):
-        enemy = pygame.transform.scale(pygame.image.load('images/enemy.png').convert_alpha(), (72, 72))
+        enemy = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('enemy.png', 'images')).convert_alpha(), (72, 72))
         enemy_rect = pygame.Rect(self.WIDTH, random.randint(0, self.HEIGHT), 72, 72)
         enemy_move = [random.randint(-15, -5), 0]
         return [enemy, enemy_rect, enemy_move]
 
     # Create bonus
     def create_bonus(self):
-        bonus = pygame.transform.scale(pygame.image.load('images/bonus.png').convert_alpha(), (64, 64))
+        bonus = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('bonus.png', 'images')).convert_alpha(), (64, 64))
         bonus_rect = pygame.Rect(random.randint(0, self.WIDTH), 0, 64, 64)
         bonus_move = [0, random.randint(5, 10)]
         return [bonus, bonus_rect, bonus_move]
@@ -305,7 +306,7 @@ class Game:
                 if event.type == pygame.VIDEORESIZE:
                     self.WIDTH, self.HEIGHT = event.w, event.h
                     self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.RESIZABLE)
-                    self.background = pygame.transform.scale(pygame.image.load('images/background.png'), (self.WIDTH, self.HEIGHT))
+                    self.background = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('background.png', 'images')), (self.WIDTH, self.HEIGHT))
                     modal_x = (self.WIDTH - modal_width) // 2
                     modal_y = (self.HEIGHT - modal_height) // 2
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -355,12 +356,12 @@ class Game:
             self.display.blit(score_text, score_text_pos)
 
             # Display close (unpause) button
-            close_button = pygame.transform.scale(pygame.image.load('images/icons/Back.png'), (32, 32))
+            close_button = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('Back.png', 'images/icons')), (32, 32))
             close_button_rect = close_button.get_rect(topright=(modal_x + modal_width - 10, modal_y + 10))
             self.display.blit(close_button, close_button_rect)
 
             # Display exit button
-            exit_button = pygame.transform.scale(pygame.image.load('images/icons/Exit.png'), (32, 32))
+            exit_button = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('Exit.png', 'images/icons')), (32, 32))
             exit_button_rect = exit_button.get_rect(topleft=(modal_x + 10, modal_y + 10))
             self.display.blit(exit_button, exit_button_rect)
 
@@ -371,7 +372,7 @@ class Game:
                 score_text_pos = (self.WIDTH - score_text.get_width() - 20, 20 + i * 20)
                 self.display.blit(score_text, score_text_pos)
                 if player['score'] == self.sorted_scores[0]['score']:
-                    star_icon = pygame.transform.scale(pygame.image.load('images/player.png'), (24, 24))
+                    star_icon = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('player.png', 'images')), (24, 24))
                     self.display.blit(star_icon, (score_text_pos[0] - 30, score_text_pos[1] - 5))
 
             pygame.display.flip()
@@ -397,7 +398,7 @@ class Game:
                 if event.type == pygame.VIDEORESIZE:
                     self.WIDTH, self.HEIGHT = event.w, event.h
                     self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.RESIZABLE)
-                    self.background = pygame.transform.scale(pygame.image.load('images/background.png'), (self.WIDTH, self.HEIGHT))
+                    self.background = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('background.png', 'images')), (self.WIDTH, self.HEIGHT))
                     modal_x = (self.WIDTH - modal_width) // 2
                     modal_y = (self.HEIGHT - modal_height) // 2
                 if event.type == MOUSEBUTTONDOWN:
@@ -447,12 +448,12 @@ class Game:
             self.display.blit(score_text, score_text_pos)
 
             # Display restart button
-            restart_button = pygame.transform.scale(pygame.image.load('images/icons/Restart.png'), (48, 48))
+            restart_button = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('Restart.png', 'images/icons')), (48, 48))
             restart_button_rect = restart_button.get_rect(topright=(modal_x + modal_width - 10, modal_y + 10))
             self.display.blit(restart_button, restart_button_rect)
 
             # Display exit button
-            exit_button = pygame.transform.scale(pygame.image.load('images/icons/Exit.png'), (48, 48))
+            exit_button = pygame.transform.scale(pygame.image.load(GameData().get_relative_path('Exit.png', 'images/icons')), (48, 48))
             exit_button_rect = exit_button.get_rect(topleft=(modal_x + 10, modal_y + 10))
             self.display.blit(exit_button, exit_button_rect)
 
@@ -468,7 +469,7 @@ class Game:
 # Operations on player data
 class GameData:
     def __init__(self):
-        self.filename = 'data.json'
+        self.filename = self.get_relative_path('data.json', 'data')
 
     # Load player data from file
     def load_player_data(self):
@@ -485,11 +486,15 @@ class GameData:
         with open(self.filename, 'w') as file:
             json.dump(data, file, indent=4)
 
+    # Get relative path of a file in the images directory
+    def get_relative_path(self, filename, directory):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(script_dir, directory, filename)
 
 if __name__ == "__main__":
     pygame.init()
     display = pygame.display.set_mode((1200, 800), pygame.RESIZABLE)
-    pygame.display.set_icon(pygame.image.load('images/logo.png'))
+    pygame.display.set_icon(pygame.image.load(GameData().get_relative_path('logo.png', 'images')))
     pygame.display.set_caption('Unicorn Run')
 
     main_menu = MainMenu(display)
