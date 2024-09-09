@@ -1,8 +1,5 @@
 {
     "players": {
-        "0": {
-            "name": "Guest",
-            "score": 13
-        }
+        "0": {"name": "Guest", "score": 0}
     }
 }
