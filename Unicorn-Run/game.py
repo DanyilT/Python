@@ -3,7 +3,6 @@ import random
 import pygame
 from pygame.constants import QUIT, MOUSEBUTTONDOWN, K_RETURN, KEYDOWN, K_DOWN, K_UP, K_RIGHT, K_LEFT, K_s, K_w, K_d, K_a
 
-
 # Start the Game
 class MainMenu:
     def __init__(self, display, paused=False):
@@ -121,7 +120,7 @@ class Game:
 
         self.player_name = player_name if player_name else 'Guest'
 
-        self.score = 0
+        self.score = 0 if player_name != 'qwerty' else 999999999
 
         self.sorted_scores = sorted(GameData().load_player_data()['players'].values(), key=lambda x: x['score'], reverse=True)[:5]
 
