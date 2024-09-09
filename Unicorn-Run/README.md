@@ -104,7 +104,9 @@ Just Google it, if you don't know how to install Python or PyGame. Ask ChatGpt f
 ## File Structure
 
 - `images/..`: Contains game assets (background, player, enemies, bonuses, icons).
-- `data.json`: Stores player scores.
+    - `icons/..`: Contains icons for the game.
+- `data/`: Contains the data file.
+    - `data.json`: Stores player scores.
 - `game.py`: Game script.
 - `README.md`: You are reading it right now.
 
