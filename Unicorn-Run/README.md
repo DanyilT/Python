@@ -131,4 +131,5 @@ Just Google it, if you don't know how to install Python or PyGame. Ask ChatGpt f
     - `__init__`: Initializes the game data.
     - `load_player_data(self)`: Loads player scores from the data file.
     - `save_player_data(self)`: Saves player scores to the data file.
+    - `get_relative_path(self, filename, directory)`: Returns the relative path of a file.
 - `if __name__ == '__main__'`: Initializes the game
