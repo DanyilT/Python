@@ -105,11 +105,11 @@ After generating the ASCII art, the script will ask if you want to save it. The 
 
 ## File Structure
 
-- `test/`: Directory containing test images.
-    - `shrek.jpg`: Sample image for testing the script.
-    - `shrek.txt`: Sample output file containing the ASCII art of the sample image.
-    - `output.txt`: Sample output file containing the ASCII art with custom quality (10000 symbols in a row).
 - `ascii_art_generator.py`: Main script to convert images to ASCII art.
+- `test/`: Directory containing test images.
+      - `shrek.jpg`: Sample image for testing the script.
+      - `shrek.txt`: Sample output file containing the ASCII art of the sample image.
+      - `output.txt`: Sample output file containing the ASCII art with custom quality (10000 symbols in a row).
 - `README.md`: You are reading it right now.
 
 ### Functions in `ascii_art_generator.py`
