@@ -39,7 +39,7 @@ Just Google it, if you don't know how to install Python or PyGame. Ask ChatGpt f
 
 ### Windows
 
-1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/). Ensure that you check the box to add Python to your PATH during installation.
+1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/windows/). Ensure that you check the box to add Python to your PATH during installation.
 2. Install PyGame using pip:
     ```sh
     pip install pygame
@@ -47,15 +47,8 @@ Just Google it, if you don't know how to install Python or PyGame. Ask ChatGpt f
 
 ### macOS
 
-1. Install Homebrew (trust me you need it, you can't install Python without it):
-    ```sh
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    ```
-2. Install Python using Homebrew:
-     ```sh
-     brew install python
-     ```
-3. Install PyGame using pip:
+1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/macos/).
+2. Install PyGame using pip:
     ```sh
     pip3 install pygame
     ```
