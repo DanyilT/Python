@@ -1,7 +1,6 @@
 # ignore
 .DS_Store
 .idea/
-out/
 
 # python
 __pycache__/
