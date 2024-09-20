@@ -94,6 +94,7 @@ The repository is structured as follows:
 - [`README.md`](README.md): Main documentation file for the repository.
 
 ## Contributing
+
 1. Fork the repository.
 2. Create a new branch:
     ```sh
@@ -110,4 +111,5 @@ The repository is structured as follows:
 5. Open a pull request.
 
 ## License
-This project is licensed under the MIT License - see the [`LICENSE`](LICENSE) file for details.
+
+This project is licensed under the MIT License. See the [`LICENSE`](LICENSE) file for details.
