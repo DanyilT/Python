@@ -1,0 +1,108 @@
+name: Release PyInstaller Builds for Programs
+
+on:
+  push:
+    tags:  # Trigger builds on <program-name> tags (e.g., v1.0.0)
+      - 'ascii_art-*'
+      - 'blackJack-*'
+      - 'unicorn_run-*'
+
+jobs:
+  build_and_release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        program: [ascii_art, blackJack, unicorn_run]
+        include:
+          - os: ubuntu-latest
+            program: ascii_art
+            add_data_sep: ":"
+            requirements_dir: "ASCII-art"
+            script_path: "ASCII-art/ascii_art_generator.py"
+            pyinstaller_args: ""
+          - os: macos-latest
+            program: ascii_art
+            add_data_sep: ":"
+            requirements_dir: "ASCII-art"
+            script_path: "ASCII-art/ascii_art_generator.py"
+            pyinstaller_args: ""
+          - os: windows-latest
+            program: ascii_art
+            add_data_sep: ";"
+            requirements_dir: "ASCII-art"
+            script_path: "ASCII-art\\ascii_art_generator.py"
+            pyinstaller_args: ""
+
+          - os: ubuntu-latest
+            program: blackJack
+            add_data_sep: ":"
+            requirements_dir: "BlackJack"
+            script_path: "BlackJack/game.py"
+            pyinstaller_args: "--add-data \"data${{ matrix.add_data_sep }}./data\" --add-data \"src/output/forGUI${{ matrix.add_data_sep }}./src/output/forGUI\""
+          - os: macos-latest
+            program: blackJack
+            add_data_sep: ":"
+            requirements_dir: "BlackJack"
+            script_path: "BlackJack/game.py"
+            pyinstaller_args: "--add-data \"data${{ matrix.add_data_sep }}./data\" --add-data \"src/output/forGUI${{ matrix.add_data_sep }}./src/output/forGUI\""
+          - os: windows-latest
+            program: blackJack
+            add_data_sep: ";"
+            requirements_dir: "BlackJack"
+            script_path: "BlackJack\\game.py"
+            pyinstaller_args: "--add-data \"data${{ matrix.add_data_sep }}./data\" --add-data \"src/output/forGUI${{ matrix.add_data_sep }}./src/output/forGUI\""
+
+          - os: ubuntu-latest
+            program: unicorn_run
+            add_data_sep: ":"
+            requirements_dir: "Unicorn-Run"
+            script_path: "Unicorn-Run/game.py"
+            pyinstaller_args: "--add-data \"data${{ matrix.add_data_sep }}./data\" --add-data \"images${{ matrix.add_data_sep }}./images\""
+          - os: macos-latest
+            program: unicorn_run
+            add_data_sep: ":"
+            requirements_dir: "Unicorn-Run"
+            script_path: "Unicorn-Run/game.py"
+            pyinstaller_args: "--add-data \"data${{ matrix.add_data_sep }}./data\" --add-data \"images${{ matrix.add_data_sep }}./images\""
+          - os: windows-latest
+            program: unicorn_run
+            add_data_sep: ";"
+            requirements_dir: "Unicorn-Run"
+            script_path: "Unicorn-Run\\game.py"
+            pyinstaller_args: "--add-data \"data${{ matrix.add_data_sep }}./data\" --add-data \"images${{ matrix.add_data_sep }}./images\""
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f "${{ matrix.requirements_dir }}/requirements.txt" ]; then
+            pip install -r "${{ matrix.requirements_dir }}/requirements.txt"
+          fi
+          pip install pyinstaller
+
+      - name: Build Program
+        run: |
+          pyinstaller --onefile ${{ matrix.pyinstaller_args }} "${{ matrix.script_path }}"
+        shell: bash
+
+      - name: Archive Executable
+        run: |
+          tar -czf ${{ matrix.program }}-${{ matrix.os }}.tar.gz dist/
+        shell: bash
+
+      - name: Create GitHub Release
+        if: always() && startsWith(github.ref, 'refs/tags/' + matrix.program + '-')
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: ${{ matrix.program }}-${{ matrix.os }}.tar.gz
