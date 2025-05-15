@@ -8,73 +8,105 @@ on:
       - 'unicorn_run-*'
 
 jobs:
+  determine_program:
+    runs-on: ubuntu-latest
+    outputs:
+      program_name: ${{ steps.set-program.outputs.program }}
+    steps:
+      - id: set-program
+        run: |
+          if [[ ${{ github.ref }} == refs/tags/ascii_art-* ]]; then
+            echo "program=ascii_art" >> $GITHUB_OUTPUT
+          elif [[ ${{ github.ref }} == refs/tags/blackJack-* ]]; then
+            echo "program=blackJack" >> $GITHUB_OUTPUT
+          elif [[ ${{ github.ref }} == refs/tags/unicorn_run-* ]]; then
+            echo "program=unicorn_run" >> $GITHUB_OUTPUT
+          fi
+
   build_and_release:
+    needs: determine_program
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false  # Don't cancel other jobs if one fails
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        program: [ascii_art, blackJack, unicorn_run]
 
     steps:
-      - name: Check out
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: '3.10'
+          cache: 'pip'
 
-      - name: Install Dependencies
+      - name: Configure paths for program
+        id: configure
+        shell: bash
         run: |
-          pip install --upgrade pip
-          if [ -f "${{ matrix.program }}/requirements.txt" ]; then
-            pip install -r "${{ matrix.program }}/requirements.txt"
+          PROGRAM="${{ needs.determine_program.outputs.program_name }}"
+          if [[ "$PROGRAM" == "ascii_art" ]]; then
+            echo "project_dir=ASCII-art" >> $GITHUB_OUTPUT
+            echo "main_script=ASCII-art/ascii_art_generator.py" >> $GITHUB_OUTPUT
+            echo "requirements_file=ASCII-art/requirements.txt" >> $GITHUB_OUTPUT
+            echo "extra_args=" >> $GITHUB_OUTPUT
+          elif [[ "$PROGRAM" == "blackJack" ]]; then
+            echo "project_dir=BlackJack" >> $GITHUB_OUTPUT
+            echo "main_script=BlackJack/game.py" >> $GITHUB_OUTPUT
+            echo "requirements_file=BlackJack/requirements.txt" >> $GITHUB_OUTPUT
+            if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+              echo 'extra_args=--add-data "data;data" --add-data "src/output/forGUI;src/output/forGUI"' >> $GITHUB_OUTPUT
+            else
+              echo 'extra_args=--add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI"' >> $GITHUB_OUTPUT
+            fi
+          elif [[ "$PROGRAM" == "unicorn_run" ]]; then
+            echo "project_dir=Unicorn-Run" >> $GITHUB_OUTPUT
+            echo "main_script=Unicorn-Run/game.py" >> $GITHUB_OUTPUT
+            echo "requirements_file=Unicorn-Run/requirements.txt" >> $GITHUB_OUTPUT
+            if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+              echo 'extra_args=--add-data "data;data" --add-data "images;images"' >> $GITHUB_OUTPUT
+            else
+              echo 'extra_args=--add-data "data:data" --add-data "images:images"' >> $GITHUB_OUTPUT
+            fi
           fi
-          pip install pyinstaller
 
-      - name: Build Program
+      - name: Debug info
         run: |
-          # Determine the path separator for --add-data based on OS
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            SEP=";"
+          echo "Program: ${{ needs.determine_program.outputs.program_name }}"
+          echo "Project dir: ${{ steps.configure.outputs.project_dir }}"
+          echo "Main script: ${{ steps.configure.outputs.main_script }}"
+          echo "Requirements file: ${{ steps.configure.outputs.requirements_file }}"
+          echo "Extra args: ${{ steps.configure.outputs.extra_args }}"
+          ls -la
+          ls -la ${{ steps.configure.outputs.project_dir }} || echo "Directory not found"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller
+          if [ -f "${{ steps.configure.outputs.requirements_file }}" ]; then
+            python -m pip install -r "${{ steps.configure.outputs.requirements_file }}"
+          fi
+
+      - name: Build with PyInstaller
+        run: |
+          python -m PyInstaller --onefile ${{ steps.configure.outputs.extra_args }} "${{ steps.configure.outputs.main_script }}"
+
+      - name: Archive executable
+        run: |
+          mkdir -p release_artifacts
+          cp -r dist/* release_artifacts/
+          # For Windows, zip the artifacts
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            7z a "${{ needs.determine_program.outputs.program_name }}-${{ matrix.os }}.zip" ./release_artifacts/*
           else
-            SEP=":"
+            tar -czf "${{ needs.determine_program.outputs.program_name }}-${{ matrix.os }}.tar.gz" -C release_artifacts .
           fi
 
-          # Build according to the program name:
-          if [ "${{ matrix.program }}" = "ascii_art" ]; then
-            # ASCII-art
-            pyinstaller --onefile \
-              "${{ matrix.program }}/ascii_art_generator.py"
-
-          elif [ "${{ matrix.program }}" = "blackJack" ]; then
-            # BlackJack
-            cd BlackJack
-            pyinstaller --onefile \
-              --add-data "data${SEP}./data" \
-              --add-data "src/output/forGUI${SEP}./src/output/forGUI" \
-              game.py
-            cd ..
-
-          elif [ "${{ matrix.program }}" = "unicorn_run" ]; then
-            # Unicorn-Run
-            cd Unicorn-Run
-            pyinstaller --onefile \
-              --add-data "data${SEP}./data" \
-              --add-data "images${SEP}./images" \
-              game.py
-            cd ..
-
-      - name: Archive Executable
-        run: |
-          # Each PyInstaller dist/ folder is created inside its respective sub-directory
-          # for blackJack and unicorn_run, we've cd'ed into that subfolder. The simplest
-          # approach is to find newly created dist/ subfolders:
-          tar -czf ${{ matrix.program }}-${{ matrix.os }}.tar.gz **/dist
-
-      - name: Create GitHub Release
-        if: startsWith(github.ref, format('refs/tags/{0}-', matrix.program))
+      - name: Upload artifacts to release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          files: ${{ matrix.program }}-${{ matrix.os }}.tar.gz
+          files: |
+            ${{ needs.determine_program.outputs.program_name }}-${{ matrix.os }}.tar.gz
+            ${{ needs.determine_program.outputs.program_name }}-${{ matrix.os }}.zip
