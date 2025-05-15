@@ -2,6 +2,8 @@
 
 This project converts images into ASCII art. It uses Python and the Pillow library to process images and map their pixels to ASCII characters.
 
+![Screenshot](img/screenshot.png)
+
 ## Features
 
 - Convert any image to ASCII art.
@@ -19,22 +21,44 @@ This project converts images into ASCII art. It uses Python and the Pillow libra
 
 Just Google it, if you don't know how to install Python, Pillow or NumPy. Ask ChatGpt for any help.
 
+> [!NOTE]
+> To make script executable, on Linux and macOS, you need to add a shebang line at the top of the script. This line tells the operating system which interpreter to use to run the script. (or just run as `python3 ascii_art_generator.py`)
+> 1. Update `ascii_art_generator.py` file to include the following lines at the top:
+>   ```python
+>   #!/usr/bin/env python3
+>   ```
+> 2. Make the script executable:
+>   ```sh
+>   chmod +x ascii_art_generator.py
+>   ```
+>   3. Run the script:
+>   ```sh
+>   ./ascii_art_generator.py
+>   ```
+
+> [!NOTE]
+> How to create executable:
+> 1. Install `pyinstaller`:
+>   ```pip install pyinstaller``` or ```pip3 install pyinstaller```
+> 2. Create executable:
+>   ```sh
+>   pyinstaller --onefile ascii_art_generator.py
+>   ```
+
 #### Windows
 
 1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/windows/). Ensure that you check the box to add Python to your PATH during installation.
-2. Install Pillow and NumPy using pip:
+2. Install dependencies (Pillow and NumPy using pip):
     ```sh
-    pip install pillow
-    pip install numpy
+    pip install -r requirements.txt
     ```
 
 #### macOS
 
 1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/macos/).
-2. Install Pillow and NumPy using pip:
+2. Install dependencies (Pillow and NumPy using pip):
     ```sh
-    pip3 install pillow
-    pip3 install numpy
+    pip3 install -r requirements.txt
     ```
 
 #### Linux
