@@ -2,6 +2,7 @@
 
 This project converts images into ASCII art. It uses Python and the Pillow library to process images and map their pixels to ASCII characters.
 
+[GitHub Release](https://github.com/DanyilT/Python/releases/tag/ascii_art-1.0.0)
 ![Screenshot (Console)](img/screenshot.png)
 
 ## Features
