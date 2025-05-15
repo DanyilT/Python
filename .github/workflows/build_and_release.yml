@@ -1,8 +1,8 @@
-name: PyInstaller Builds for Programs
+name: Release PyInstaller Builds for Programs
 
 on:
   push:
-    tags:
+    tags:  # Trigger builds on <program-name> tags (e.g., v1.0.0)
       - 'ascii_art-*'
       - 'blackJack-*'
       - 'unicorn_run-*'
