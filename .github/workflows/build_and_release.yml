@@ -22,7 +22,7 @@ jobs:
             arch: x64
           - os: macos-13
             arch: x64
-          - os: macos-latest 
+          - os: macos-latest
             arch: arm64
 
     steps:
@@ -69,23 +69,17 @@ jobs:
         shell: bash
 
       - name: Build executable for macOS Intel (x64)
-        if: matrix.os == 'macos-13'
-        env:
-          MACOSX_DEPLOYMENT_TARGET: '10.15'  # Target older macOS for better compatibility
+        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
 
-          # Install minimal bootloader to reduce dependency issues
-          pip install pyinstaller-hooks-contrib
-
+          # For x64 on macOS, we need to install specific dependencies
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
-            # Build for Intel Macs with compatibility options
-            python -m PyInstaller --onefile \
+            # Build for Intel Macs with safer options
+            python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-intel" \
               --exclude-module _tkinter \
-              --collect-submodules PIL \
-              --clean \
-              "${{ steps.detect-program.outputs.script }}"
+              --exclude-module numpy._core._multiarray_tests
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
             # Build for Intel Macs with safer options
@@ -94,8 +88,7 @@ jobs:
               --add-data "src/output/forGUI:src/output/forGUI" \
               --name "${{ steps.detect-program.outputs.program }}-intel" \
               --exclude-module _tkinter \
-              --collect-submodules PIL \
-              --clean \
+              --exclude-module numpy._core._multiarray_tests \
               "${{ steps.detect-program.outputs.script }}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
@@ -105,8 +98,7 @@ jobs:
               --add-data "images:images" \
               --name "${{ steps.detect-program.outputs.program }}-intel" \
               --exclude-module _tkinter \
-              --collect-submodules PIL \
-              --clean \
+              --exclude-module numpy._core._multiarray_tests \
               "${{ steps.detect-program.outputs.script }}"
           fi
         shell: bash
@@ -160,7 +152,7 @@ jobs:
         shell: bash
 
       - name: Package macOS Intel artifact
-        if: matrix.os == 'macos-13'
+        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
         id: package_intel
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
@@ -168,10 +160,6 @@ jobs:
           tar -czf "../${ARTIFACT}.tar.gz" -C dist .
           echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
           cd ..
-
-          # Display file info for debugging
-          ls -la "${{ steps.detect-program.outputs.directory }}/dist/"
-          file "${{ steps.detect-program.outputs.directory }}/dist/"*
         shell: bash
 
       - name: Package macOS Silicon artifact
@@ -183,10 +171,6 @@ jobs:
           tar -czf "../${ARTIFACT}.tar.gz" -C dist .
           echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
           cd ..
-
-          # Display file info for debugging
-          ls -la "${{ steps.detect-program.outputs.directory }}/dist/"
-          file "${{ steps.detect-program.outputs.directory }}/dist/"*
         shell: bash
 
       - name: Package Windows/Linux artifact
@@ -210,7 +194,7 @@ jobs:
         shell: bash
 
       - name: Upload macOS Intel build
-        if: matrix.os == 'macos-13'
+        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.package_intel.outputs.artifact_path }}
