@@ -4,8 +4,8 @@ on:
   push:
     tags:  # Trigger builds on <program-name> tags (e.g., v1.0.0)
       - 'ascii_art-*'
-      - 'blackJack-*'
       - 'unicorn_run-*'
+      - 'black_jack-*'
 
 jobs:
   build:
@@ -20,10 +20,10 @@ jobs:
             arch: x64
           - os: windows-latest
             arch: x64
-          - os: macos-latest
-            arch: arm64
-          - os: macos-latest 
+          - os: macos-13
             arch: x64
+          - os: macos-latest 
+            arch: arm64
 
     steps:
       - name: Checkout code
@@ -45,10 +45,10 @@ jobs:
             echo "program=ascii_art" >> $GITHUB_OUTPUT
             echo "directory=ASCII-art" >> $GITHUB_OUTPUT
             echo "script=ascii_art_generator.py" >> $GITHUB_OUTPUT
-          elif [[ "$TAG_NAME" == blackJack* ]]; then
-            echo "Building BlackJack"
-            echo "program=blackJack" >> $GITHUB_OUTPUT
-            echo "directory=BlackJack" >> $GITHUB_OUTPUT
+          elif [[ "$TAG_NAME" == black_jack* ]]; then
+            echo "Building black_jack"
+            echo "program=black_jack" >> $GITHUB_OUTPUT
+            echo "directory=black_jack" >> $GITHUB_OUTPUT
             echo "script=game.py" >> $GITHUB_OUTPUT
           elif [[ "$TAG_NAME" == unicorn_run* ]]; then
             echo "Building Unicorn Run"
@@ -68,8 +68,8 @@ jobs:
           fi
         shell: bash
 
-      - name: Build executable for macOS (x64)
-        if: matrix.os == 'macos-latest' && matrix.arch == 'x64'
+      - name: Build executable for macOS Intel (x64)
+        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
 
@@ -81,7 +81,7 @@ jobs:
               --exclude-module _tkinter \
               --exclude-module numpy._core._multiarray_tests
 
-          elif [[ "${{ steps.detect-program.outputs.program }}" == "blackJack" ]]; then
+          elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
             # Build for Intel Macs with safer options
             python -m PyInstaller --onefile \
               --add-data "data:data" \
@@ -103,7 +103,7 @@ jobs:
           fi
         shell: bash
 
-      - name: Build executable for macOS (ARM64)
+      - name: Build executable for macOS ARM64 (Silicon)
         if: matrix.os == 'macos-latest' && matrix.arch == 'arm64'
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
@@ -112,7 +112,7 @@ jobs:
             python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-silicon"
 
-          elif [[ "${{ steps.detect-program.outputs.program }}" == "blackJack" ]]; then
+          elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
             python -m PyInstaller --onefile \
               --add-data "data:data" \
               --add-data "src/output/forGUI:src/output/forGUI" \
@@ -129,7 +129,7 @@ jobs:
         shell: bash
 
       - name: Build executable for Windows/Linux
-        if: matrix.os != 'macos-latest'
+        if: matrix.os != 'macos-13' && matrix.os != 'macos-latest'
         run: |
           # OS-specific separator
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
@@ -143,7 +143,7 @@ jobs:
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
             python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}"
 
-          elif [[ "${{ steps.detect-program.outputs.program }}" == "blackJack" ]]; then
+          elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
             python -m PyInstaller --onefile --add-data "data${SEP}data" --add-data "src/output/forGUI${SEP}src/output/forGUI" "${{ steps.detect-program.outputs.script }}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
@@ -152,7 +152,7 @@ jobs:
         shell: bash
 
       - name: Package macOS Intel artifact
-        if: matrix.os == 'macos-latest' && matrix.arch == 'x64'
+        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
         id: package_intel
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
@@ -174,7 +174,7 @@ jobs:
         shell: bash
 
       - name: Package Windows/Linux artifact
-        if: matrix.os != 'macos-latest'
+        if: matrix.os != 'macos-13' && matrix.os != 'macos-latest'
         id: package_other
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
@@ -194,7 +194,7 @@ jobs:
         shell: bash
 
       - name: Upload macOS Intel build
-        if: matrix.os == 'macos-latest' && matrix.arch == 'x64'
+        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.package_intel.outputs.artifact_path }}
@@ -206,7 +206,7 @@ jobs:
           files: ${{ steps.package_silicon.outputs.artifact_path }}
 
       - name: Upload Windows/Linux build
-        if: matrix.os != 'macos-latest' 
+        if: matrix.os != 'macos-13' && matrix.os != 'macos-latest'
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.package_other.outputs.artifact_path }}
