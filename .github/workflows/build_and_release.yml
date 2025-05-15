@@ -1,8 +1,8 @@
-name: Release PyInstaller Builds for Programs
+name: PyInstaller Builds for Programs
 
 on:
   push:
-    tags:  # Trigger builds on <program-name> tags (e.g., v1.0.0)
+    tags:
       - 'ascii_art-*'
       - 'blackJack-*'
       - 'unicorn_run-*'
@@ -101,7 +101,7 @@ jobs:
         shell: bash
 
       - name: Create GitHub Release
-        if: always() && startsWith(github.ref, 'refs/tags/' + matrix.program + '-')
+        if: startsWith(github.ref, 'refs/tags/' + matrix.program + '-')
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
