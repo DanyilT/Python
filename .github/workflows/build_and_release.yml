@@ -37,10 +37,10 @@ jobs:
             echo "program=ascii_art" >> $GITHUB_OUTPUT
             echo "directory=ASCII-art" >> $GITHUB_OUTPUT
             echo "script=ascii_art_generator.py" >> $GITHUB_OUTPUT
-          elif [[ "$TAG_NAME" == black_jack* ]]; then
-            echo "Building black_jack"
-            echo "program=black_jack" >> $GITHUB_OUTPUT
-            echo "directory=black_jack" >> $GITHUB_OUTPUT
+          elif [[ "$TAG_NAME" == blackJack* ]]; then
+            echo "Building BlackJack"
+            echo "program=blackJack" >> $GITHUB_OUTPUT
+            echo "directory=BlackJack" >> $GITHUB_OUTPUT
             echo "script=game.py" >> $GITHUB_OUTPUT
           elif [[ "$TAG_NAME" == unicorn_run* ]]; then
             echo "Building Unicorn Run"
@@ -50,58 +50,23 @@ jobs:
           fi
         shell: bash
 
+      - name: Print Python and OS information
+        run: |
+          python --version
+          python -c "import platform; print(f'Platform: {platform.platform()}')"
+          echo "Runner OS: ${{ matrix.os }}"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install pyinstaller
 
           if [ -f "${{ steps.detect-program.outputs.directory }}/requirements.txt" ]; then
-            pip install -r "${{ steps.detect-program.outputs.directory }}/requirements.txt"
+            python -m pip install -r "${{ steps.detect-program.outputs.directory }}/requirements.txt"
           fi
         shell: bash
 
-      - name: Build executable (macOS Universal Binary)
-        if: matrix.os == 'macos-latest'
-        run: |
-          cd "${{ steps.detect-program.outputs.directory }}"
-
-          if [ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]; then
-            # Build for Intel
-            python -m PyInstaller --target-architecture x86_64 --onefile "${{ steps.detect-program.outputs.script }}" --name "${{ steps.detect-program.outputs.program }}-x86_64"
-
-            # Build for Apple Silicon
-            python -m PyInstaller --target-architecture arm64 --onefile "${{ steps.detect-program.outputs.script }}" --name "${{ steps.detect-program.outputs.program }}-arm64"
-
-            # Create universal binary
-            mkdir -p dist/universal
-            lipo -create -output "dist/universal/${{ steps.detect-program.outputs.program }}" "dist/${{ steps.detect-program.outputs.program }}-x86_64" "dist/${{ steps.detect-program.outputs.program }}-arm64"
-
-          elif [ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]; then
-            # Build for Intel
-            python -m PyInstaller --target-architecture x86_64 --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" --name "${{ steps.detect-program.outputs.program }}-x86_64"
-
-            # Build for Apple Silicon
-            python -m PyInstaller --target-architecture arm64 --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" --name "${{ steps.detect-program.outputs.program }}-arm64"
-
-            # Create universal binary
-            mkdir -p dist/universal
-            lipo -create -output "dist/universal/${{ steps.detect-program.outputs.program }}" "dist/${{ steps.detect-program.outputs.program }}-x86_64" "dist/${{ steps.detect-program.outputs.program }}-arm64"
-
-          elif [ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]; then
-            # Build for Intel
-            python -m PyInstaller --target-architecture x86_64 --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" --name "${{ steps.detect-program.outputs.program }}-x86_64"
-
-            # Build for Apple Silicon
-            python -m PyInstaller --target-architecture arm64 --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" --name "${{ steps.detect-program.outputs.program }}-arm64"
-
-            # Create universal binary
-            mkdir -p dist/universal
-            lipo -create -output "dist/universal/${{ steps.detect-program.outputs.program }}" "dist/${{ steps.detect-program.outputs.program }}-x86_64" "dist/${{ steps.detect-program.outputs.program }}-arm64"
-          fi
-        shell: bash
-
-      - name: Build executable (Non-macOS)
-        if: matrix.os != 'macos-latest'
+      - name: Build executable
         run: |
           # OS-specific separator
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
@@ -113,13 +78,13 @@ jobs:
           cd "${{ steps.detect-program.outputs.directory }}"
 
           if [ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]; then
-            pyinstaller --onefile "${{ steps.detect-program.outputs.script }}"
+            python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}"
 
-          elif [ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]; then
-            pyinstaller --onefile --add-data "data${SEP}data" --add-data "src/output/forGUI${SEP}src/output/forGUI" "${{ steps.detect-program.outputs.script }}"
+          elif [ "${{ steps.detect-program.outputs.program }}" == "blackJack" ]; then
+            python -m PyInstaller --onefile --add-data "data${SEP}data" --add-data "src/output/forGUI${SEP}src/output/forGUI" "${{ steps.detect-program.outputs.script }}"
 
           elif [ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]; then
-            pyinstaller --onefile --add-data "data${SEP}data" --add-data "images${SEP}images" "${{ steps.detect-program.outputs.script }}"
+            python -m PyInstaller --onefile --add-data "data${SEP}data" --add-data "images${SEP}images" "${{ steps.detect-program.outputs.script }}"
           fi
         shell: bash
 
@@ -131,20 +96,11 @@ jobs:
           # Create platform-specific archive name
           ARTIFACT="${{ steps.detect-program.outputs.program }}-${{ matrix.os }}"
 
-          if [ "${{ matrix.os }}" == "macos-latest" ]; then
-            # Package the universal binary
-            tar -czf "../${ARTIFACT}.tar.gz" -C dist/universal .
-          elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
             7z a "../${ARTIFACT}.zip" ./dist/*
             echo "artifact_path=${ARTIFACT}.zip" >> $GITHUB_OUTPUT
           else
             tar -czf "../${ARTIFACT}.tar.gz" -C dist .
-          fi
-
-          # Set the artifact path for upload
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            echo "artifact_path=${ARTIFACT}.zip" >> $GITHUB_OUTPUT
-          else
             echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
           fi
 
