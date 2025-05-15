@@ -71,33 +71,41 @@ jobs:
       - name: Build executable for macOS Intel (x64)
         if: matrix.os == 'macos-13'
         env:
-          MACOSX_DEPLOYMENT_TARGET: '10.13'  # Target older macOS for better compatibility
+          MACOSX_DEPLOYMENT_TARGET: '10.15'  # Target older macOS for better compatibility
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
 
-          # Create directory-based app for better compatibility (not single file)
+          # Install minimal bootloader to reduce dependency issues
+          pip install pyinstaller-hooks-contrib
+
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
-            python -m PyInstaller --onedir \
-              --name "${{ steps.detect-program.outputs.program }}" \
-              --noconfirm \
+            # Build for Intel Macs with compatibility options
+            python -m PyInstaller --onefile \
+              --name "${{ steps.detect-program.outputs.program }}-intel" \
+              --exclude-module _tkinter \
+              --collect-submodules PIL \
               --clean \
               "${{ steps.detect-program.outputs.script }}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onedir \
+            # Build for Intel Macs with safer options
+            python -m PyInstaller --onefile \
               --add-data "data:data" \
               --add-data "src/output/forGUI:src/output/forGUI" \
-              --name "${{ steps.detect-program.outputs.program }}" \
-              --noconfirm \
+              --name "${{ steps.detect-program.outputs.program }}-intel" \
+              --exclude-module _tkinter \
+              --collect-submodules PIL \
               --clean \
               "${{ steps.detect-program.outputs.script }}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onedir \
+            # Build for Intel Macs with safer options
+            python -m PyInstaller --onefile \
               --add-data "data:data" \
               --add-data "images:images" \
-              --name "${{ steps.detect-program.outputs.program }}" \
-              --noconfirm \
+              --name "${{ steps.detect-program.outputs.program }}-intel" \
+              --exclude-module _tkinter \
+              --collect-submodules PIL \
               --clean \
               "${{ steps.detect-program.outputs.script }}"
           fi
@@ -157,11 +165,9 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
           ARTIFACT="${{ steps.detect-program.outputs.program }}-macos-intel"
-          cd dist
-          # Package the directory and launcher script together
-          zip -r "../../${ARTIFACT}.zip" .
-          cd ../..
-          echo "artifact_path=${ARTIFACT}.zip" >> $GITHUB_OUTPUT
+          tar -czf "../${ARTIFACT}.tar.gz" -C dist .
+          echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
+          cd ..
 
           # Display file info for debugging
           ls -la "${{ steps.detect-program.outputs.directory }}/dist/"
@@ -174,11 +180,9 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
           ARTIFACT="${{ steps.detect-program.outputs.program }}-macos-silicon"
-          cd dist
-          # Package the directory and launcher script together
-          zip -r "../../${ARTIFACT}.zip" .
-          cd ../..
-          echo "artifact_path=${ARTIFACT}.zip" >> $GITHUB_OUTPUT
+          tar -czf "../${ARTIFACT}.tar.gz" -C dist .
+          echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
+          cd ..
 
           # Display file info for debugging
           ls -la "${{ steps.detect-program.outputs.directory }}/dist/"
