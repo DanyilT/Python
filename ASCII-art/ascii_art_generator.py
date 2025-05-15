@@ -36,8 +36,9 @@ def main():
             output_file = f'{file_name}.txt'
         
         # Save the ASCII art
-        save_ascii_art(ascii_art, output_file)
-        print(f"ASCII art saved as {output_file}")
+        output_path = os.path.join(os.path.dirname(args.image_path), output_file)
+        save_ascii_art(ascii_art, output_path)
+        print(f"ASCII art saved as {os.path.abspath(output_path)}")
 
 # Set the width based on the quality level
 def get_quality_width(quality):
@@ -90,12 +91,13 @@ def load_and_resize_image(image_path, width):
         img = img.convert('RGB')
 
     # Calculate the new height based on the aspect ratio
-    we_dont_need_this_width_anymore, we_dont_need_this_height_anymore = img.size
+    we_dont_need_this_width_anymore, we_dont_need_this_height_anymore = img.size # orig_width, orig_height
     aspect_ratio = we_dont_need_this_height_anymore / we_dont_need_this_width_anymore
+    char_aspect_ratio = 0.55  # Correction factor for monospace fonts
 
     # Resize the image to the target width
-    # The height is set to 40% of the width to match the aspect ratio of characters
-    return img.resize((width, int(width * aspect_ratio * 0.4)))
+    # The height is set to 55% of the width to match the aspect ratio of characters
+    return img.resize((width, int(width * aspect_ratio * char_aspect_ratio)))
 
 # Enhance the image for better ASCII art conversion
 def enhance_image(img):
