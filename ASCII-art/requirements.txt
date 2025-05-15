@@ -1,0 +1,4 @@
+#### ASCII-art/requirements.txt
+
+pillow
+numpy
