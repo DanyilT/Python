@@ -2,6 +2,9 @@
 
 Unicorn Run is a 2D side-scrolling game built using Python and Pygame. The player controls a unicorn, avoiding enemies and collecting bonuses to score points.
 
+[GitHub Release](https://github.com/DanyilT/Python/releases/tag/unicorn_run-1.0.0)
+![Screenshot (GUI)](./img/screenshot.png)
+
 ## Features
 
 - Main Menu: Start a new game, continue a paused game, or exit.
@@ -37,20 +40,49 @@ Unicorn Run is a 2D side-scrolling game built using Python and Pygame. The playe
 
 Just Google it, if you don't know how to install Python or PyGame. Ask ChatGpt for any help.
 
+> [!NOTE]
+> To make script executable, on Linux and macOS, you need to add a shebang line at the top of the script. This line tells the operating system which interpreter to use to run the script. (or just run as `python3 game.py`)
+> 1. Update `game.py` file to include the following lines at the top:
+>   ```python
+>   #!/usr/bin/env python3
+>   ```
+> 2. Make the script executable:
+>   ```sh
+>   chmod +x game.py
+>   ```
+>   3. Run the script:
+>   ```sh
+>   ./game.py
+>   ```
+
+> [!NOTE]
+> How to create executable:
+> 1. Install `pyinstaller`:
+>   ```pip install pyinstaller``` or ```pip3 install pyinstaller```
+> 2. Create executable:
+>   ```sh
+>   # On Linux and macOS
+>   pyinstaller --onefile --add-data "data:./data" --add-data "images:./images" game.py
+>   ```
+>   ```sh
+>   # On Windows
+>   pyinstaller --onefile --add-data "data;./data" --add-data "images;./images" game.py
+>   ```
+
 ### Windows
 
 1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/windows/). Ensure that you check the box to add Python to your PATH during installation.
-2. Install PyGame using pip:
+2. Install dependencies (PyGame using pip):
     ```sh
-    pip install pygame
+    pip install -r requirements.txt
     ```
 
 ### macOS
 
 1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/macos/).
-2. Install PyGame using pip:
+2. Install dependencies (PyGame using pip):
     ```sh
-    pip3 install pygame
+    pip3 install -r requirements.txt
     ```
 
 ### Linux
