@@ -3,8 +3,8 @@
 This project is implementation of a Blackjack game using Python and Tkinter for the graphical user interface (GUI). The game allows multiple players to play against a dealer.
 
 [GitHub Release](https://github.com/DanyilT/Python/releases/tag/black_jack-1.0.0)
-![Screenshot (Console)](img/screenshot1.png)
-![Screenshot (GUI)](img/screenshot2.png)
+![Screenshot (Console)](./img/screenshot1.png)
+![Screenshot (GUI)](./img/screenshot2.png)
 
 ## Features
 
