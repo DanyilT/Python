@@ -73,42 +73,45 @@ jobs:
           fi
         shell: bash
 
-      - name: Build executable for macOS Intel (x64)
-        if: matrix.os == 'macos-13'
+      - name: Create Python app bundle (macOS)
+        if: startsWith(matrix.os, 'macos')
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
 
-          if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
-            python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-intel"
-
-          elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-intel"
-
-          elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-intel"
+          # Create prefix for architecture
+          if [[ "${{ matrix.os }}" == "macos-12" ]]; then
+            ARCH_PREFIX="intel"
+          else
+            ARCH_PREFIX="silicon"
           fi
-        shell: bash
 
-      - name: Build executable for macOS ARM64 (Silicon)
-        if: matrix.os == 'macos-latest' && matrix.arch == 'arm64'
-        run: |
-          cd "${{ steps.detect-program.outputs.directory }}"
-
+          # Create a proper macOS .app bundle - no exclusions
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
-            python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-silicon"
-
+            python -m PyInstaller --windowed --onedir \
+              --name "${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}" \
+              "${{ steps.detect-program.outputs.script }}"
+              
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-silicon"
-
+            python -m PyInstaller --windowed --onedir \
+              --add-data "data:data" \
+              --add-data "src/output/forGUI:src/output/forGUI" \
+              --name "${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}" \
+              "${{ steps.detect-program.outputs.script }}"
+              
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-silicon"
+            python -m PyInstaller --windowed --onedir \
+              --add-data "data:data" \
+              --add-data "images:images" \
+              --name "${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}" \
+              "${{ steps.detect-program.outputs.script }}"
           fi
+          # Create a simple launcher script for Terminal users
+          cat > "dist/run_${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.command" << 'EOF'
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+open "$DIR/${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.app"
+EOF
+          chmod +x "dist/run_${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.command"
         shell: bash
 
       - name: Build executable for Windows/Linux
@@ -140,9 +143,11 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
           ARTIFACT="${{ steps.detect-program.outputs.program }}-macos-intel"
-          tar -czf "../${ARTIFACT}.tar.gz" -C dist .
-          echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
-          cd ..
+          cd dist
+          hdiutil create -volname "${{ steps.detect-program.outputs.program }}_intel" \
+            -srcfolder . -ov -format UDZO "../../${ARTIFACT}.dmg"
+          cd ../..
+          echo "artifact_path=${ARTIFACT}.dmg" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Package macOS Silicon artifact
@@ -151,9 +156,12 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
           ARTIFACT="${{ steps.detect-program.outputs.program }}-macos-silicon"
-          tar -czf "../${ARTIFACT}.tar.gz" -C dist .
-          echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
-          cd ..
+          cd dist
+          # Create DMG for better macOS experience
+          hdiutil create -volname "${{ steps.detect-program.outputs.program }}_silicon" \
+            -srcfolder . -ov -format UDZO "../../${ARTIFACT}.dmg"
+          cd ../..
+          echo "artifact_path=${ARTIFACT}.dmg" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Package Windows/Linux artifact
