@@ -135,7 +135,7 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
           ARTIFACT="${{ steps.detect-program.outputs.program }}-macos-intel"
-          tar -czf "../${ARTIFACT}.tar.gz" -C dist .
+          tar -czf "../${ARTIFACT}.tar.gz" .
           echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
           cd ..
         shell: bash
@@ -164,7 +164,7 @@ jobs:
             7z a "../${ARTIFACT}.zip" ./dist/*
             echo "artifact_path=${ARTIFACT}.zip" >> $GITHUB_OUTPUT
           else
-            tar -czf "../${ARTIFACT}.tar.gz" -C dist .
+            tar -czf "../${ARTIFACT}.tar.gz" .
             echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
           fi
 
