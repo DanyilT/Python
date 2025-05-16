@@ -69,7 +69,7 @@ jobs:
         shell: bash
 
       - name: Build executable for macOS Intel (x64)
-        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
+        if: matrix.os == 'macos-13'
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
 
@@ -78,28 +78,14 @@ jobs:
             # Build for Intel Macs with safer options
             python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-intel" \
-              --exclude-module _tkinter \
-              --exclude-module numpy._core._multiarray_tests
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            # Build for Intel Macs with safer options
-            python -m PyInstaller --onefile \
-              --add-data "data:data" \
-              --add-data "src/output/forGUI:src/output/forGUI" \
-              --name "${{ steps.detect-program.outputs.program }}-intel" \
-              --exclude-module _tkinter \
-              --exclude-module numpy._core._multiarray_tests \
-              "${{ steps.detect-program.outputs.script }}"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}"
+              --name "${{ steps.detect-program.outputs.program }}-intel"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            # Build for Intel Macs with safer options
-            python -m PyInstaller --onefile \
-              --add-data "data:data" \
-              --add-data "images:images" \
-              --name "${{ steps.detect-program.outputs.program }}-intel" \
-              --exclude-module _tkinter \
-              --exclude-module numpy._core._multiarray_tests \
-              "${{ steps.detect-program.outputs.script }}"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}"
+              --name "${{ steps.detect-program.outputs.program }}-intel"
           fi
         shell: bash
 
@@ -113,18 +99,12 @@ jobs:
               --name "${{ steps.detect-program.outputs.program }}-silicon"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onefile \
-              --add-data "data:data" \
-              --add-data "src/output/forGUI:src/output/forGUI" \
-              --name "${{ steps.detect-program.outputs.program }}-silicon" \
-              "${{ steps.detect-program.outputs.script }}"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}"
+              --name "${{ steps.detect-program.outputs.program }}-silicon"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onefile \
-              --add-data "data:data" \
-              --add-data "images:images" \
-              --name "${{ steps.detect-program.outputs.program }}-silicon" \
-              "${{ steps.detect-program.outputs.script }}"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}"
+              --name "${{ steps.detect-program.outputs.program }}-silicon"
           fi
         shell: bash
 
@@ -152,7 +132,7 @@ jobs:
         shell: bash
 
       - name: Package macOS Intel artifact
-        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
+        if: matrix.os == 'macos-13'
         id: package_intel
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
@@ -194,12 +174,12 @@ jobs:
         shell: bash
 
       - name: Upload macOS Intel build
-        if: matrix.os == 'macos-13' && matrix.arch == 'x64'
+        if: matrix.os == 'macos-13'
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.package_intel.outputs.artifact_path }}
 
-      - name: Upload macOS Silicon build  
+      - name: Upload macOS Silicon build
         if: matrix.os == 'macos-latest' && matrix.arch == 'arm64'
         uses: softprops/action-gh-release@v1
         with:
