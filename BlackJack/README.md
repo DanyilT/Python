@@ -2,6 +2,10 @@
 
 This project is implementation of a Blackjack game using Python and Tkinter for the graphical user interface (GUI). The game allows multiple players to play against a dealer.
 
+[GitHub Release](https://github.com/DanyilT/Python/releases/tag/black_jack-1.0.0)
+![Screenshot (Console)](img/screenshot1.png)
+![Screenshot (GUI)](img/screenshot2.png)
+
 ## Features
 
 - The game is implemented in Python.
@@ -42,20 +46,49 @@ This project is implementation of a Blackjack game using Python and Tkinter for 
 
 Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask ChatGpt for any help.
 
+> [!NOTE]
+> To make script executable, on Linux and macOS, you need to add a shebang line at the top of the script. This line tells the operating system which interpreter to use to run the script. (or just run as `python3 game.py`)
+> 1. Update `game.py` file to include the following lines at the top:
+>   ```python
+>   #!/usr/bin/env python3
+>   ```
+> 2. Make the script executable:
+>   ```sh
+>   chmod +x game.py
+>   ```
+>   3. Run the script:
+>   ```sh
+>   ./game.py
+>   ```
+
+> [!NOTE]
+> How to create executable:
+> 1. Install `pyinstaller`:
+>   ```pip install pyinstaller``` or ```pip3 install pyinstaller```
+> 2. Create executable:
+>   ```sh
+>   # On Linux and macOS
+>   pyinstaller --onefile --add-data "data:./data" --add-data "src/output/forGUI:./src/output/forGUI" game.py
+>   ```
+>   ```sh
+>   # On Windows
+>   pyinstaller --onefile --add-data "data;./data" --add-data "src/output/forGUI;./src/output/forGUI" game.py
+>   ```
+
 #### Windows
 
 1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/windows/). Ensure that you check the box to add Python to your PATH during installation.
-2. Install Pillow (download if you want to use qui version of the game):
+2. Install dependencies (download if you want to use qui version of the game):
     ```sh
-    pip install pillow
+    pip install -r requirements.txt
     ```
 
 #### macOS
 
 1. Download and install the latest version of Python from the [official Python website](https://www.python.org/downloads/macos/).
-2. Install Pillow (download if you want to use qui version of the game):
+2. Install dependencies (download if you want to use qui version of the game):
     ```sh
-    pip3 install pillow
+    pip3 install -r requirements.txt
     ```
 
 #### Linux
@@ -93,11 +126,11 @@ Just Google it, if you don't know how to install Python, Tkinter or Pillow. Ask 
 1. Run the main script to start the game:
    - For Windows:
         ```sh
-        python main.py
+        python game.py
         ```
    - For macOS and Linux:
         ```sh
-        python3 main.py
+        python3 game.py
         ```
 
 2. The program will ask `Enter 'console' for console output or 'gui' for GUI output:`
