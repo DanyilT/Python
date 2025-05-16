@@ -105,12 +105,11 @@ jobs:
               --name "${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}" \
               "${{ steps.detect-program.outputs.script }}"
           fi
-          # Create a simple launcher script for Terminal users
-          cat > "dist/run_${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.command" << 'EOF'
-#!/bin/bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-open "$DIR/${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.app"
-EOF
+
+          # Create launcher script without heredoc syntax
+          echo '#!/bin/bash' > "dist/run_${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.command"
+          echo 'DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"' >> "dist/run_${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.command"
+          echo 'open "$DIR/${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.app"' >> "dist/run_${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.command"
           chmod +x "dist/run_${{ steps.detect-program.outputs.program }}_${ARCH_PREFIX}.command"
         shell: bash
 
