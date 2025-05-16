@@ -48,7 +48,7 @@ jobs:
           elif [[ "$TAG_NAME" == black_jack* ]]; then
             echo "Building black_jack"
             echo "program=black_jack" >> $GITHUB_OUTPUT
-            echo "directory=black_jack" >> $GITHUB_OUTPUT
+            echo "directory=BlackJack" >> $GITHUB_OUTPUT
             echo "script=game.py" >> $GITHUB_OUTPUT
           elif [[ "$TAG_NAME" == unicorn_run* ]]; then
             echo "Building Unicorn Run"
