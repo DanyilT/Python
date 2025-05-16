@@ -20,7 +20,7 @@ jobs:
             arch: x64
           - os: windows-latest
             arch: x64
-          - os: macos-13
+          - os: macos-12
             arch: x64
           - os: macos-latest
             arch: arm64
@@ -69,23 +69,21 @@ jobs:
         shell: bash
 
       - name: Build executable for macOS Intel (x64)
-        if: matrix.os == 'macos-13'
+        if: matrix.os == 'macos-12'
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
 
-          # For x64 on macOS, we need to install specific dependencies
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
-            # Build for Intel Macs with safer options
             python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-intel" \
+              --name "${{ steps.detect-program.outputs.program }}-${ARCH_PREFIX}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}"
-              --name "${{ steps.detect-program.outputs.program }}-intel"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
+              --name "${{ steps.detect-program.outputs.program }}-${ARCH_PREFIX}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}"
-              --name "${{ steps.detect-program.outputs.program }}-intel"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
+              --name "${{ steps.detect-program.outputs.program }}-${ARCH_PREFIX}"
           fi
         shell: bash
 
@@ -96,20 +94,20 @@ jobs:
 
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
             python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
-              --name "${{ steps.detect-program.outputs.program }}-silicon"
+              --name "${{ steps.detect-program.outputs.program }}-${ARCH_PREFIX}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}"
-              --name "${{ steps.detect-program.outputs.program }}-silicon"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
+              --name "${{ steps.detect-program.outputs.program }}-${ARCH_PREFIX}"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}"
-              --name "${{ steps.detect-program.outputs.program }}-silicon"
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
+              --name "${{ steps.detect-program.outputs.program }}-${ARCH_PREFIX}"
           fi
         shell: bash
 
       - name: Build executable for Windows/Linux
-        if: matrix.os != 'macos-13' && matrix.os != 'macos-latest'
+        if: matrix.os != 'macos-12' && matrix.os != 'macos-latest'
         run: |
           # OS-specific separator
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
@@ -132,7 +130,7 @@ jobs:
         shell: bash
 
       - name: Package macOS Intel artifact
-        if: matrix.os == 'macos-13'
+        if: matrix.os == 'macos-12'
         id: package_intel
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
@@ -154,7 +152,7 @@ jobs:
         shell: bash
 
       - name: Package Windows/Linux artifact
-        if: matrix.os != 'macos-13' && matrix.os != 'macos-latest'
+        if: matrix.os != 'macos-12' && matrix.os != 'macos-latest'
         id: package_other
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
@@ -174,7 +172,7 @@ jobs:
         shell: bash
 
       - name: Upload macOS Intel build
-        if: matrix.os == 'macos-13'
+        if: matrix.os == 'macos-12'
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.package_intel.outputs.artifact_path }}
@@ -186,7 +184,7 @@ jobs:
           files: ${{ steps.package_silicon.outputs.artifact_path }}
 
       - name: Upload Windows/Linux build
-        if: matrix.os != 'macos-13' && matrix.os != 'macos-latest'
+        if: matrix.os != 'macos-12' && matrix.os != 'macos-latest'
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ steps.package_other.outputs.artifact_path }}
