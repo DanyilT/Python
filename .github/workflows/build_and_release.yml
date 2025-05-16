@@ -74,15 +74,15 @@ jobs:
           cd "${{ steps.detect-program.outputs.directory }}"
 
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
-            python -m PyInstaller --onedir "${{ steps.detect-program.outputs.script }}" \
+            python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-intel"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onedir --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-intel"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onedir --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-intel"
           fi
         shell: bash
@@ -93,15 +93,15 @@ jobs:
           cd "${{ steps.detect-program.outputs.directory }}"
 
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
-            python -m PyInstaller --onedir "${{ steps.detect-program.outputs.script }}" \
+            python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-silicon"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "black_jack" ]]; then
-            python -m PyInstaller --onedir --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "src/output/forGUI:src/output/forGUI" "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-silicon"
 
           elif [[ "${{ steps.detect-program.outputs.program }}" == "unicorn_run" ]]; then
-            python -m PyInstaller --onedir --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
+            python -m PyInstaller --onefile --add-data "data:data" --add-data "images:images" "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-silicon"
           fi
         shell: bash
@@ -146,7 +146,7 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
           ARTIFACT="${{ steps.detect-program.outputs.program }}-macos-silicon"
-          tar -czf "../${ARTIFACT}.tar.gz" .
+          tar -czf "../${ARTIFACT}.tar.gz" -C dist .
           echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
           cd ..
         shell: bash
