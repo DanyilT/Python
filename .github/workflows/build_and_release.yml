@@ -73,9 +73,6 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
 
-          # Set deployment target matching Monterey system
-          export MACOSX_DEPLOYMENT_TARGET=12.0
-
           if [[ "${{ steps.detect-program.outputs.program }}" == "ascii_art" ]]; then
             python -m PyInstaller --onefile "${{ steps.detect-program.outputs.script }}" \
               --name "${{ steps.detect-program.outputs.program }}-intel"
@@ -149,7 +146,7 @@ jobs:
         run: |
           cd "${{ steps.detect-program.outputs.directory }}"
           ARTIFACT="${{ steps.detect-program.outputs.program }}-macos-silicon"
-          tar -czf "../${ARTIFACT}.tar.gz" -C dist .
+          tar -czf "../${ARTIFACT}.tar.gz" .
           echo "artifact_path=${ARTIFACT}.tar.gz" >> $GITHUB_OUTPUT
           cd ..
         shell: bash
