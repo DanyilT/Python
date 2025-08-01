@@ -13,6 +13,14 @@ This repository contains a collection of Python games and projects, including a 
 
 ## Features
 
+### Tic-Tac-Toe
+- A command-line based Tic-Tac-Toe game (with nice interface).
+- Implemented with an _unbeatable AI_ using the Minimax algorithm.
+- Supports multiple game modes:
+  - Player vs Player (PvP)
+  - Player vs Computer (PvC) with an unbeatable AI using the Minimax algorithm
+  - Computer vs Computer (CvC) to watch AI play against itself
+
 ### BlackJack
 - A command-line based card game following the traditional rules of Blackjack.
 - Built using Tkinter for the GUI.
@@ -88,6 +96,10 @@ The repository is structured as follows:
 - [`Unicorn-Run/..`](Unicorn-Run): Unicorn-Run game project.
    - [`game.py`](Unicorn-Run/game.py): Main script to run the game.
    - [`README.md`](Unicorn-Run/README.md): Documentation for the Unicorn-Run game.
+
+- [`Tic-Tac-Toe/..`](Tic-Tac-Toe): Tic-Tac-Toe game project.
+   - [`tic-tac-toe.py`](Tic-Tac-Toe/tic-tac-toe.py): Main script to run the Tic-Tac-Toe game (all in one file).
+   - [`README.md`](Tic-Tac-Toe/README.md): Documentation for the Tic-Tac-Toe game.
 
 - [`.gitignore`](.gitignore): Git ignore file to exclude certain files and directories from version control.
 - [`LICENSE`](LICENSE): License information for the repository.
