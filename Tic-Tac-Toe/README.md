@@ -2,8 +2,7 @@
 
 A feature-rich console-based Tic-Tac-Toe game implemented in Python with an unbeatable AI using the minimax algorithm.
 
-[![asciicast](https://asciinema.org/a/xGGv9ypiqkq8Hzv3z1etHMuxV.svg)](https://asciinema.org/a/xGGv9ypiqkq8Hzv3z1etHMuxV)
-Demo...
+[![asciicast, demo...](https://asciinema.org/a/xGGv9ypiqkq8Hzv3z1etHMuxV.svg)](https://asciinema.org/a/xGGv9ypiqkq8Hzv3z1etHMuxV)
 
 ## Features
 
@@ -21,7 +20,9 @@ Demo...
 
 > [!NOTE]
 > You can just download the whole game as a file (it's just a one file `tic-tac-toe.py`) and don't need to clone the repository:
+> 
 > Notice, that this `README.md`, `LICENSE` and `requirements.txt` files will not be downloaded, so you will not have the documentation, license information and requirements file to use to download the dependencies, only the game code itself.
+> 
 > Source: [DanyilT/Python/Tic-Tac-Toe/](https://github.com/DanyilT/Python/blob/main/Tic-Tac-Toe/)[tic-tac-toe.py](https://github.com/DanyilT/Python/blob/main/Tic-Tac-Toe/tic-tac-toe.py)
 >   ```bash
 >   wget https://raw.githubusercontent.com/DanyilT/Python/refs/heads/main/Tic-Tac-Toe/tic-tac-toe.py
